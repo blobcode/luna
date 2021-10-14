@@ -34,4 +34,4 @@ End with an example of getting some data out of the system or using it for a lit
 
 ## Usage <a name = "usage"></a>
 
-Using luna is simple. Just use `luna new <name>` to generate a new project. This creates a folder with a luna.ini config file, and a `templates` and `posts` folder. In the templates folder, there are 3 files: home.html, post.html and posts.html. These are templates for your posts. In the posts folder, there are markdown documents, which have a front matter defining data and then the post body.
+Using luna is simple. Just use `luna new <name>` to generate a new project. This creates a folder with a luna.ini config file, and a `templates` and `posts` folder. In the templates folder, there are 3 files: home.html, post.html and posts.html. These are templates for your posts. In the posts folder, there are markdown documents, which have a front matter defining data and then the post body. Run `luna serve` to generate and serve your files. Run `luna generate` to build your html.
