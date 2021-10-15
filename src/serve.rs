@@ -28,7 +28,7 @@ fn get_content_type(path: &Path) -> &'static str {
 }
 
 pub fn run(port: i32) {
-    let server = tiny_http::Server::http("0.0.0.0:8000").unwrap();
+    let server = tiny_http::Server::http("0.0.0.0:".to_string() + &port.to_string()).unwrap();
     let port = server.server_addr().port();
     println!("Now listening on port {}", port);
 
