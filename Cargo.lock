@@ -161,6 +161,7 @@ dependencies = [
 name = "luna"
 version = "0.1.0"
 dependencies = [
+ "ascii",
  "gray_matter",
  "include_dir",
  "markdown",

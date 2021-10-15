@@ -1,10 +1,14 @@
 //config is parsed here
+// lots of work to do
 extern crate tini;
 use tini::Ini;
 
 // main config struct
 pub struct Config {
-    pub inputpath: Option<String>,
+    pub port: i32,
+    pub postspath: String,
+    pub templatespath: String,
+    pub outputbuildpath: String,
 }
 
 fn readfile(path: &str) -> Ini {

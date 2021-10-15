@@ -2,8 +2,11 @@ extern crate include_dir;
 
 mod args;
 mod new;
+mod serve;
+
 pub use crate::args::{submain, AppArgs};
 pub use crate::new::init;
+pub use crate::serve::run;
 
 const HELPTEXT: &str = r#" 
      _.._
@@ -47,7 +50,12 @@ fn main() {
             }
             AppArgs::New { name, path } => {
                 // copy fs from memory
+                // implement path
                 init(name, "./".to_string());
+            }
+            AppArgs::Serve { port } => {
+                run(3000);
+                print!("server running")
             }
         },
         Err(e) => eprintln!("Error: {:?}.", e),
