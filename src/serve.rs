@@ -1,5 +1,4 @@
 // webserver for development
-// lots of work to do here
 pub use crate::config::getconfig;
 pub use crate::generator::build;
 use ascii::AsciiString;

@@ -11,12 +11,14 @@ pub struct Config {
     pub outputbuildpath: String,
 }
 
+// read in config file helper function
 fn readfile(path: &str) -> Ini {
     let data = Ini::from_file(path).unwrap();
     return data;
 }
 
 // main function
+// reads file and then translates it to struct
 pub fn getconfig() -> Config {
     // parse and print args
     // todo: parse config file
