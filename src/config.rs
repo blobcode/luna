@@ -19,7 +19,7 @@ fn readfile(path: &str) -> Ini {
 // main function
 pub fn getconfig() -> Config {
     // parse and print args
-    // parse config file
+    // todo: parse config file
     let confile = readfile("./luna.ini");
     let config = Config {
         port: 8000,

@@ -1,18 +1,11 @@
-// generates from assets
-// 1. create new folder
-// 2. copy static files
-// 3. create folder structure
-// 4. generate posts
-// 5. fill remaining templates
+// This needs a lot of work
+
 pub use crate::config::getconfig;
 use dircpy::*;
 use extract_frontmatter::Extractor;
 use microtemplate::{render, Substitutions};
 use slug::slugify;
-use std::error::Error;
 use std::fs;
-use std::fs::File;
-use std::io::prelude::*;
 use std::path::Path;
 use walkdir::WalkDir;
 extern crate markdown;
@@ -22,8 +15,29 @@ struct Post<'a> {
     title: &'a str, // automatically replaces "{title}" in a template
     body: &'a str,
 }
+#[derive(Substitutions)]
+struct Home<'a> {
+    posts: &'a str, // automatically replaces "{title}" in a template
+}
+#[derive(Substitutions)]
+struct Listing<'a> {
+    title: &'a str, // automatically replaces "{title}" in a template
+    slug: &'a str,
+}
+#[derive(Substitutions)]
+struct Postsdata<'a> {
+    posts: &'a str,
+}
 
+struct Postdata {
+    title: String,
+    slug: String,
+}
+
+// todo: use config for paths
+// also maybe dynamic structure?
 pub fn build() {
+    let mut postlist: Vec<Postdata> = Vec::new();
     // get data from luna.ini
     let config = getconfig();
     // create base dirs
@@ -33,13 +47,7 @@ pub fn build() {
     // copy over static assets
     copy_dir("./static", "./build/static");
 
-    // loop over posts
-    // read content
-    // read header
-    // parse markdowm
-    // parse template
-    // create new folder with slug name
-    // create new file (index.html name)
+    // walk over posts
     for entry in WalkDir::new("./posts").into_iter().filter_map(|e| e.ok()) {
         if Path::new(entry.path()).is_file() {
             let rawdata = fs::read_to_string(entry.path()).unwrap();
@@ -55,7 +63,6 @@ pub fn build() {
             let info: Vec<&str> = front_matter.split(":").collect();
             let title = info[2].trim();
             let html: String = markdown::to_html(document);
-
             let postdata = Post {
                 title: title,
                 body: &html,
@@ -69,6 +76,33 @@ pub fn build() {
             fs::create_dir(postpath);
             let filepath = format!("{}/{}", "./build/posts/".to_string() + &slug, "index.html");
             fs::write(filepath, rendered);
+
+            let postinfo = Postdata {
+                title: String::from("test"),
+                slug: slug,
+            };
+            postlist.push(postinfo);
         }
     }
+
+    //read in templates
+    let hometemplate = fs::read_to_string("./templates/home.html").unwrap();
+    let poststemplate = fs::read_to_string("./templates/posts.html").unwrap();
+    let listingtemplate = fs::read_to_string("./templates/postlisting.html").unwrap();
+    let mut html = String::from("");
+    for post in postlist {
+        let listing = Listing {
+            title: &post.title,
+            slug: &post.slug,
+        };
+        let rendered = render(&listingtemplate, listing);
+        html = format!("{}{}", html, &rendered);
+    }
+    let homedata = Home { posts: &html };
+    let postlistdata = Postsdata { posts: &html };
+
+    let rendered = render(&hometemplate, homedata);
+    let renderedpostlist = render(&poststemplate, postlistdata);
+    fs::write("./build/index.html", rendered);
+    fs::write("./build/posts/index.html", renderedpostlist);
 }

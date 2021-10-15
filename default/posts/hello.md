@@ -3,4 +3,4 @@ meta:
 ---
 
 # Hello World
-Hi
+Welcome to luna! Take a look around!

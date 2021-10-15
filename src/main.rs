@@ -31,37 +31,36 @@ COMMANDS:
   build                 Compiles your site
 FLAGS:
   -h, --help            Prints help information
-OPTIONS:
-  --output PATH         Sets an output path
+  -c, --config          Path to project's luna.ini
 
 "#;
 
 fn main() {
-    // main application logic
+  // main application logic
 
-    match submain() {
-        Ok(args) => match args {
-            AppArgs::Global { help } => {
-                // implement help function here
-                print!("{}", HELPTEXT);
-            }
-            AppArgs::Help {} => {
-                print!("{}", HELPTEXT);
-            }
-            AppArgs::Build { output } => {
-                // call generator function here
-                build();
-            }
-            AppArgs::New { name, path } => {
-                // copy fs from memory
-                // implement path
-                init(name, "./".to_string());
-            }
-            AppArgs::Serve { port } => {
-                run(3000);
-                print!("server running")
-            }
-        },
-        Err(e) => eprintln!("Error: {:?}.", e),
-    }
+  match submain() {
+    Ok(args) => match args {
+      AppArgs::Global { help } => {
+        // implement help function here
+        print!("{}", HELPTEXT);
+      }
+      AppArgs::Help {} => {
+        print!("{}", HELPTEXT);
+      }
+      AppArgs::Build { output } => {
+        // call generator function here
+        build();
+      }
+      AppArgs::New { name, path } => {
+        // copy fs from memory
+        // implement path
+        init(name, "./".to_string());
+      }
+      AppArgs::Serve { port } => {
+        run(port);
+        print!("server running")
+      }
+    },
+    Err(e) => eprintln!("Error: {:?}.", e),
+  }
 }

@@ -1,6 +1,7 @@
-// webserver
+// webserver for development
 // lots of work to do here
-
+pub use crate::config::getconfig;
+pub use crate::generator::build;
 use ascii::AsciiString;
 use std::fs;
 use std::path::Path;
@@ -27,10 +28,23 @@ fn get_content_type(path: &Path) -> &'static str {
     }
 }
 
-pub fn run(port: i32) {
+pub fn run(argport: Option<i32>) {
+    let config = getconfig();
+
+    // trigger build before serve
+    build();
+
+    let mut port = 0;
+
+    if argport.is_none() {
+        port = config.port
+    } else {
+        port = argport.unwrap();
+    }
+
     let server = tiny_http::Server::http("0.0.0.0:".to_string() + &port.to_string()).unwrap();
     let port = server.server_addr().port();
-    println!("Now listening on port {}", port);
+    println!("Now listening on http://localhost:{}", port);
 
     loop {
         let rq = match server.recv() {
@@ -56,7 +70,7 @@ pub fn run(port: i32) {
             let _ = rq.respond(response);
         } else {
             // code to look for index files
-            let strpath = format!("{}{}{}", root, url, "index.html");
+            let strpath = format!("{}{}{}", root, url, "/index.html");
             let path = Path::new(&strpath);
             let file = fs::File::open(&path);
             if file.is_ok() {
