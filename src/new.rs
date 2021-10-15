@@ -6,5 +6,5 @@ use include_dir::Dir;
 static DEFAULT: Dir = include_dir!("./default");
 
 pub fn init(name: String, path: String) {
-    let _new = DEFAULT.extract(path + &name);
+    let new = DEFAULT.extract(path + &name);
 }

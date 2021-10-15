@@ -14,7 +14,7 @@ pub fn submain() -> Result<AppArgs, Box<dyn std::error::Error>> {
   match args.subcommand()?.as_deref() {
     Some("new") => Ok(AppArgs::New {
       name: args.value_from_str(["-n", "--name"])?,
-      path: args.opt_value_from_str(["-fp", "--path"])?,
+      path: args.opt_value_from_str(["-p", "--path"])?,
     }),
     Some("build") => Ok(AppArgs::Build {
       output: args.opt_value_from_str(["-o", "--output"])?,

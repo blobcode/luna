@@ -1,10 +1,14 @@
 extern crate include_dir;
 
 mod args;
+mod config;
+mod generator;
 mod new;
 mod serve;
 
 pub use crate::args::{submain, AppArgs};
+pub use crate::config::getconfig;
+pub use crate::generator::build;
 pub use crate::new::init;
 pub use crate::serve::run;
 
@@ -45,8 +49,8 @@ fn main() {
                 print!("{}", HELPTEXT);
             }
             AppArgs::Build { output } => {
-                // call assembler function here
-                println!("placeholder")
+                // call generator function here
+                build();
             }
             AppArgs::New { name, path } => {
                 // copy fs from memory

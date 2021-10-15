@@ -39,7 +39,7 @@ pub fn run(port: i32) {
         };
 
         println!("{:?}", rq);
-        let root = String::from(".");
+        let root = String::from("./build");
         let url = rq.url().to_string();
         let strpath = format!("{}{}", root, url);
         let path = Path::new(&strpath);

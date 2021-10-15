@@ -12,8 +12,8 @@ pub struct Config {
 }
 
 fn readfile(path: &str) -> Ini {
-    let conf = Ini::from_file(path).unwrap();
-    return conf;
+    let data = Ini::from_file(path).unwrap();
+    return data;
 }
 
 // main function
@@ -21,6 +21,11 @@ pub fn getconfig() -> Config {
     // parse and print args
     // parse config file
     let confile = readfile("./luna.ini");
-    let config = Config { inputpath: None };
+    let config = Config {
+        port: 8000,
+        postspath: String::from("./posts"),
+        templatespath: String::from("./templates"),
+        outputbuildpath: String::from("./build"),
+    };
     return config;
 }
