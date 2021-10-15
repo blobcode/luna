@@ -24,13 +24,17 @@ To get the dev enviroment running, first clone the repo
 git clone https://github.com/blobcode/luna
 ```
 
-and then cd into it
+and then cd into it.
 
 ```
 cd luna
 ```
 
-End with an example of getting some data out of the system or using it for a little demo.
+You can then run the project
+
+```
+cargo run
+```
 
 ## Usage <a name = "usage"></a>
 
