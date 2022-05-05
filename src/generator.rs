@@ -41,17 +41,17 @@ pub fn build() {
     // get data from luna.ini
     let config = getconfig();
     // create base dirs
-    fs::create_dir("./build");
-    fs::create_dir("./build/posts");
+    fs::create_dir("./build").unwrap();
+    fs::create_dir("./build/posts").unwrap();
 
     // copy over static assets
-    copy_dir("./static", "./build/static");
+    copy_dir("./static", "./build/static").unwrap();
 
     // walk over posts
     for entry in WalkDir::new("./posts").into_iter().filter_map(|e| e.ok()) {
         if Path::new(entry.path()).is_file() {
             let rawdata = fs::read_to_string(entry.path()).unwrap();
-            let data = format!("{}", rawdata);
+            let data = rawdata.to_string();
 
             let mut extractor = Extractor::new(&data);
             extractor.select_by_terminator("---");
@@ -60,26 +60,23 @@ pub fn build() {
 
             let front_matter = front_matter.join("\n");
             let document = document.trim();
-            let info: Vec<&str> = front_matter.split(":").collect();
+            let info: Vec<&str> = front_matter.split(':').collect();
             let title = info[2].trim();
             let html: String = markdown::to_html(document);
-            let postdata = Post {
-                title: title,
-                body: &html,
-            };
+            let postdata = Post { title, body: &html };
 
             //read in templates
             let posttemplate = fs::read_to_string("./templates/post.html").unwrap();
             let rendered = render(&posttemplate, postdata);
             let slug = slugify(title);
             let postpath = "./build/posts/".to_string() + &slug;
-            fs::create_dir(postpath);
+            fs::create_dir(postpath).unwrap();
             let filepath = format!("{}/{}", "./build/posts/".to_string() + &slug, "index.html");
-            fs::write(filepath, rendered);
+            fs::write(filepath, rendered).unwrap();
 
             let postinfo = Postdata {
                 title: String::from("test"),
-                slug: slug,
+                slug,
             };
             postlist.push(postinfo);
         }
@@ -89,6 +86,7 @@ pub fn build() {
     let hometemplate = fs::read_to_string("./templates/home.html").unwrap();
     let poststemplate = fs::read_to_string("./templates/posts.html").unwrap();
     let listingtemplate = fs::read_to_string("./templates/postlisting.html").unwrap();
+
     let mut html = String::from("");
     for post in postlist {
         let listing = Listing {
@@ -103,6 +101,6 @@ pub fn build() {
 
     let rendered = render(&hometemplate, homedata);
     let renderedpostlist = render(&poststemplate, postlistdata);
-    fs::write("./build/index.html", rendered);
-    fs::write("./build/posts/index.html", renderedpostlist);
+    fs::write("./build/index.html", rendered).unwrap();
+    fs::write("./build/posts/index.html", renderedpostlist).unwrap();
 }

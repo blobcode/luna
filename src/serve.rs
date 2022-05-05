@@ -33,7 +33,7 @@ pub fn run(argport: Option<i32>) {
     // trigger build before serve
     build();
 
-    let mut port = 0;
+    let mut port;
 
     if argport.is_none() {
         port = config.port
@@ -58,7 +58,7 @@ pub fn run(argport: Option<i32>) {
         let path = Path::new(&strpath);
         let file = fs::File::open(&path);
 
-        if file.is_ok() {
+        if let Ok(..) = file {
             let response = tiny_http::Response::from_file(file.unwrap());
 
             let response = response.with_header(tiny_http::Header {
