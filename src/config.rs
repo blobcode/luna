@@ -21,12 +21,12 @@ fn readfile(path: &str) -> Ini {
 pub fn getconfig() -> Config {
     // parse and print args
     // todo: parse config file
-    let configfile = readfile("./luna.ini");
+    let ini = readfile("./luna.ini");
     let config = Config {
-        port: 8000,
-        postspath: String::from("./posts"),
-        templatespath: String::from("./templates"),
-        outputbuildpath: String::from("./build"),
+        port: ini.get("dev", "port").unwrap(),
+        postspath: ini.get("build", "posts").unwrap(),
+        templatespath: ini.get("build", "templates").unwrap(),
+        outputbuildpath: ini.get("build", "output").unwrap(),
     };
     config
 }
