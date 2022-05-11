@@ -33,7 +33,7 @@ pub fn run(argport: Option<i32>) {
     // trigger build before serve
     build();
 
-    let mut port;
+    let mut port = 0;
 
     if argport.is_none() {
         port = config.port
@@ -52,13 +52,25 @@ pub fn run(argport: Option<i32>) {
         };
 
         println!("{:?}", rq);
+
         let root = String::from("./build");
         let url = rq.url().to_string();
         let strpath = format!("{}{}", root, url);
         let path = Path::new(&strpath);
-        let file = fs::File::open(&path);
 
-        if let Ok(..) = file {
+        if path.is_file() {
+            let file = fs::File::open(&path);
+            let response = tiny_http::Response::from_file(file.unwrap());
+
+            let response = response.with_header(tiny_http::Header {
+                field: "Content-Type".parse().unwrap(),
+                value: AsciiString::from_ascii(get_content_type(&path)).unwrap(),
+            });
+
+            let _ = rq.respond(response);
+        } else if path.is_dir() {
+            let path = &path.join("index.html");
+            let file = fs::File::open(&path);
             let response = tiny_http::Response::from_file(file.unwrap());
 
             let response = response.with_header(tiny_http::Header {
@@ -68,22 +80,8 @@ pub fn run(argport: Option<i32>) {
 
             let _ = rq.respond(response);
         } else {
-            // code to look for index files
-            let strpath = format!("{}{}{}", root, url, "/index.html");
-            let path = Path::new(&strpath);
-            let file = fs::File::open(&path);
-            if file.is_ok() {
-                let response = tiny_http::Response::from_file(file.unwrap());
-
-                let response = response.with_header(tiny_http::Header {
-                    field: "Content-Type".parse().unwrap(),
-                    value: AsciiString::from_ascii(get_content_type(&path)).unwrap(),
-                });
-                let _ = rq.respond(response);
-            } else {
-                let rep = tiny_http::Response::new_empty(tiny_http::StatusCode(404));
-                let _ = rq.respond(rep);
-            }
+            let rep = tiny_http::Response::new_empty(tiny_http::StatusCode(404));
+            let _ = rq.respond(rep);
         }
     }
 }
